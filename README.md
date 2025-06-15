@@ -39,10 +39,8 @@ curl -L -o gsm https://github.com/dacsang97/gsm/releases/latest/download/gsm-lin
 chmod +x gsm
 sudo mv gsm /usr/local/bin/
 
-# ARM64 (static binary - works on any Linux distribution)  
-curl -L -o gsm https://github.com/dacsang97/gsm/releases/latest/download/gsm-linux-aarch64
-chmod +x gsm
-sudo mv gsm /usr/local/bin/
+# ARM64 - Coming soon
+# For ARM64 Linux, please build from source for now
 ```
 
 #### macOS

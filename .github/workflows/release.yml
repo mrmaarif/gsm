@@ -30,9 +30,9 @@ jobs:
             os: ubuntu-latest
             name: gsm-linux-x86_64
             
-          - target: aarch64-unknown-linux-musl
-            os: ubuntu-latest
-            name: gsm-linux-aarch64
+          # TODO: Add ARM64 Linux support
+          # Currently disabled due to GLIBC version mismatch in cross-compilation
+          # Alternative: Use GitHub's ARM64 runners when available
             
           # macOS
           - target: x86_64-apple-darwin
@@ -106,7 +106,7 @@ jobs:
             Choose the appropriate binary for your platform:
             
             - **Linux x86_64**: `gsm-linux-x86_64` (static binary)
-            - **Linux ARM64**: `gsm-linux-aarch64` (static binary)
+
             - **macOS x86_64**: `gsm-macos-x86_64`
             - **macOS ARM64**: `gsm-macos-aarch64`
             - **Windows x86_64**: `gsm-windows-x86_64.exe`
