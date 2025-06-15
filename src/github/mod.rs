@@ -58,8 +58,12 @@ pub async fn get_repo_public_key(
     let text = resp.text().await?;
     let value: Value = serde_json::from_str(&text)?;
     Ok(PublicKey {
-        key: value["key"].as_str().unwrap().to_string(),
-        key_id: value["key_id"].as_str().unwrap().to_string(),
+        key: value["key"].as_str()
+            .ok_or_else(|| GithubError::HttpError("Missing 'key' field in response".to_string()))?
+            .to_string(),
+        key_id: value["key_id"].as_str()
+            .ok_or_else(|| GithubError::HttpError("Missing 'key_id' field in response".to_string()))?
+            .to_string(),
     })
 }
 
