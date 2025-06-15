@@ -5,12 +5,10 @@ edition = "2024"
 
 [dependencies]
 aes-gcm = "0.10.3"
-anyhow = "1.0.98"
 base64 = "0.22.1"
 clap = { version = "4.5.40", features = ["color", "derive", "suggestions"] }
 colored = "3.0.0"
 dotenvy = "0.15.7"
-octocrab = "0.44.1"
 pbkdf2 = "0.12.2"
 rand = "0.9.1"
 reqwest = { version = "0.12.20", features = ["json"] }
