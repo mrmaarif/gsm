@@ -30,6 +30,27 @@ help         Print this message or the help of the given subcommand(s)
 - `GITHUB_TOKEN`: Your GitHub personal access token
 - `ENCRYPTION_KEY`: The master key for encryption/decryption (recommended to set in `.env` file)
 
+## ⚠️ IMPORTANT SECURITY NOTE
+
+**ALWAYS encrypt your config files before committing to source control, especially public repositories!**
+
+- **NEVER** commit raw YAML files containing secrets to GitHub
+- **ALWAYS** use `encrypt` or `encrypt-all` commands before pushing to your repository
+- Only commit files from the `encrypted/` folder to source control
+- Keep raw files in `raw/` folder and add `raw/` to your `.gitignore`
+- Use strong, unique `ENCRYPTION_KEY` and store it securely (environment variables, CI/CD secrets, etc.)
+
+```bash
+# ✅ GOOD: Encrypt first, then commit
+gsm encrypt-all --input ./config
+git add config/encrypted/
+git commit -m "Add encrypted config files"
+
+# ❌ BAD: Never do this!
+git add config/raw/
+git commit -m "Add raw config files"  # This exposes your secrets!
+```
+
 ## Example Config File
 ```yaml
 org: your-github-org
