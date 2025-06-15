@@ -34,12 +34,12 @@ Download the latest release for your platform from the [Releases page](https://g
 
 #### Linux
 ```bash
-# x86_64
+# x86_64 (static binary - works on any Linux distribution)
 curl -L -o gsm https://github.com/dacsang97/gsm/releases/latest/download/gsm-linux-x86_64
 chmod +x gsm
 sudo mv gsm /usr/local/bin/
 
-# ARM64
+# ARM64 (static binary - works on any Linux distribution)  
 curl -L -o gsm https://github.com/dacsang97/gsm/releases/latest/download/gsm-linux-aarch64
 chmod +x gsm
 sudo mv gsm /usr/local/bin/
