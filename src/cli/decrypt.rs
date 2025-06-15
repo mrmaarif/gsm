@@ -1,10 +1,10 @@
-use clap::Parser;
-use std::fs;
-use std::path::Path;
-use base64::{engine::general_purpose, Engine as _};
 use crate::config::{Config, EncryptedConfig};
 use crate::crypto;
 use crate::error::Result;
+use base64::{Engine as _, engine::general_purpose};
+use clap::Parser;
+use std::fs;
+use std::path::Path;
 
 /// Decrypt an encrypted config file
 #[derive(Parser, Debug)]
@@ -26,7 +26,7 @@ pub fn run(args: &DecryptArgs) -> Result<()> {
         let stem = input.file_stem().unwrap_or_default().to_string_lossy();
         let ext = input.extension().and_then(|e| e.to_str()).unwrap_or("");
         let mut out_name = format!("{}.decrypted.yaml", stem);
-        if ext != "" && ext != "yaml" {
+        if !ext.is_empty() && ext != "yaml" {
             out_name = format!("{}.decrypted.{}", stem, ext);
         }
         let parent = input.parent().unwrap_or_else(|| Path::new("."));
@@ -52,4 +52,4 @@ pub fn run(args: &DecryptArgs) -> Result<()> {
     fs::write(&output_path, yaml)?;
     println!("Decrypted '{}' to '{}' ✅", input_path, output_path);
     Ok(())
-} 
+}
